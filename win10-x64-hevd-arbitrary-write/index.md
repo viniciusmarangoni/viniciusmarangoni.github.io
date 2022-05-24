@@ -484,6 +484,8 @@ _loop:
 
 ```
 
+To get the opcodes for this assembly shellcode, you can use [this](https://github.com/viniciusmarangoni/shellcoding-tools).
+
 ### Complete Exploit
 
 So now we have completed the exploit. Below you can see the complete source code, but you can also access it in [my github](https://github.com/viniciusmarangoni/hevd-arbitrary-write):
