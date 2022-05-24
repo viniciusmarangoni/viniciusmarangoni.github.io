@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=0.8">
-        <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+        <link rel="icon" href="assets/github.svg">
         <link rel="stylesheet" href="assets/highlight/styles/a11y-dark.min.css">
         <script src="assets/highlight/highlight.min.js"></script>
         <script src="assets/marked.min.js"></script>
@@ -107,6 +107,9 @@
 
                     if(Object.keys(blogposts).includes(page_name)){
                         var path = blogposts[page_name]['path'];
+                        var title = blogposts[page_name]['title'];
+
+                        document.getElementById('title-tag').innerHTML = title;
 
                         var renderer = new marked.Renderer();
                         var baseUrl = path;
@@ -154,6 +157,7 @@
                 else{
                     // Home
                     var inner_html = '';
+                    document.getElementById('title-tag').innerHTML = blog_title;
 
                     var blogpost_keys = Object.keys(blogposts);
 
@@ -182,6 +186,8 @@
                 }
             };
         </script>
+
+        <title id="title-tag"></title>
     </head>
     <body>
         <div class="content">
