@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=0.8">
+        <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+        <link rel="stylesheet" href="assets/highlight/styles/a11y-dark.min.css">
+        <script src="assets/highlight/highlight.min.js"></script>
+        <script src="assets/marked.min.js"></script>
+
+        <style>
+            body {
+                background-color: #1c1c1c;
+                color: #e8eef2;
+                line-height: 150%;
+                font-family: 'Courier New', monospace;
+                word-wrap: break-word;
+            }
+
+            a {
+                color: #e8eef2;
+                text-decoration: underline;
+            }
+
+            h1, h2, h3, h4, h5, h6 {
+                color: #c5c853;
+            }
+
+            code {
+                border-radius: 5px;
+            }
+
+            pre code {
+                font-size: 1.2em;
+            }
+
+            img {
+                max-width: 100%;
+            }
+
+            hr {
+                border: 0;
+                height: 1px;
+                background: #333;
+                background-image: linear-gradient(to right, #333, #305e2e, #333);
+            }
+
+            .content {
+                max-width: 960px;
+                margin: auto;
+            }
+
+            .column {
+                float: left;
+                padding: 5px;
+            }
+
+            .row::after {
+                content: "";
+                clear: both;
+                display: table;
+            }
+        </style>
+        <script>
+            var blog_title = 'viniciusmarangoni';
+            var author_linkedin = 'https://www.linkedin.com/in/viniciusmarangoni';
+            var author_github = 'https://github.com/viniciusmarangoni';
+
+            var blogposts = {
+                'win10-x64-hevd-arbitrary-write': {title: 'Kernel Exploitation - Windows 10 x64 HEVD Arbitrary Write', date: '2022-05-23', path: 'win10-x64-hevd-arbitrary-write/'},
+            };
+
+
+            function get_markdown_contents(path, callback) {
+                var xhr = new XMLHttpRequest();
+
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState == 4) {
+                        if (xhr.status == 200) {
+                            callback(xhr.responseText);
+                        } else {
+                            callback(null);
+                        }
+                    }
+                };
+
+                xhr.open("GET", path);
+                xhr.send();
+            }
+
+            window.onload = function() {
+                hljs.configure({
+                    cssSelector: 'code',
+                    languages: [] // prevent auto language detection
+                });
+
+                // Header
+
+                document.getElementById('blog-title').innerHTML = marked.parse('# ' + blog_title);
+                document.getElementById('author-linkedin').href = author_linkedin;
+                document.getElementById('author-github').href = author_github;
+
+
+                // Some page
+                if(window.location.search.length > 0){
+                    var page_name = window.location.search.substr(1);
+
+                    if(Object.keys(blogposts).includes(page_name)){
+                        var path = blogposts[page_name]['path'];
+
+                        var renderer = new marked.Renderer();
+                        var baseUrl = path;
+
+                        marked.setOptions({
+                            baseUrl: path,
+                            langPrefix: 'hljs language-'
+                        });
+
+                        renderer.link = function(href, title, text) {
+                            if(title == null) {
+                                title = "";
+                            }
+
+                            return '<a target="_blank" href="'+ href +'" title="' + title + '">' + text + '</a>';
+                        }
+
+                        renderer.image = function (src, title, alt) {
+                            if(title == null) {
+                                title = "";
+                            }
+                            if(alt == null) {
+                                alt = "";
+                            }
+
+                            return '<a target="_blank" href="' + baseUrl + src + '"><img src="'+ baseUrl + src + '" title="' + title + '" alt="' + alt + '"></img></a>';
+                        }
+
+                        get_markdown_contents(path + 'index.md', function(markdown_text){
+                            if(markdown_text){
+                                document.getElementById('markdown-content').innerHTML = marked.parse(markdown_text, {renderer: renderer});
+                                hljs.highlightAll();
+                            }
+                            else{
+                                alert('Error while rendering markdown.');
+                                window.location = '/';
+                            }
+                        });
+                    }
+                    else{
+                        window.location = '/';
+                    }
+                }
+
+                else{
+                    // Home
+                    var inner_html = '';
+
+                    var blogpost_keys = Object.keys(blogposts);
+
+                    // Sort by date
+                    blogpost_keys.sort(function(x, y){
+                        if(Date.parse(blogposts[x]['date']) > Date.parse(blogposts[y]['date'])) {
+                            return -1;
+                        }
+                        else if(Date.parse(blogposts[x]['date']) < Date.parse(blogposts[y]['date'])) {
+                            return 1;
+                        }
+
+                        return 0;
+                    });
+
+                    for(var i = 0; i < blogpost_keys.length; i++) {
+                        var post = blogpost_keys[i];
+                        var title = blogposts[post]['title'];
+                        var date = blogposts[post]['date'];
+
+                        inner_html += '<a href="/?' + post + '">' + date + ' ' + title + '</a><br/>';
+                    }
+
+                    document.getElementById('posts').innerHTML = inner_html;
+                    hljs.highlightAll();
+                }
+            };
+        </script>
+    </head>
+    <body>
+        <div class="content">
+            <a href="/" style="text-decoration: none;" id="blog-title"></a>
+
+            <div class="row">
+                <div class="column">
+                    <a id="author-github" href="#" target="_blank"><img src="assets/github.svg" style="-webkit-filter: invert(100%); width: 30px"></a>
+                </div>
+                <div class="column">
+                    <a id="author-linkedin" href="#" target="_blank"><img src="assets/linkedin.png" style="width: 30px"></a>
+                </div>
+            </div>
+
+            <br/><hr /><br/>
+
+            <div id="posts"></div>
+            <div id="markdown-content"></div>
+        </div>
+    </body>
+</html>
