@@ -3,6 +3,8 @@
 Date: 2022-05-23
 
 
+[TOC]
+
 ### Introduction
 
 After a long time without writing, I took the decision to start a blog to share the things I've been studying. Now every post will be written in English, so I can practice my writing skills and reach more people interested in the same topics I am.
